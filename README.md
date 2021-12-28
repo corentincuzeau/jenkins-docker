@@ -1,2 +1,3 @@
 # jenkins-docker
-Docker-compose avec Jenkins dedans
+Docker-compose avec Jenkins dedans.
+
