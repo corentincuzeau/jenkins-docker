@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  jenkins:
+    container_name: jenkins
+    restart: always
+    image: jenkins/jenkins:lts
+    labels:
+      - "traefik.enable=true" # <== Enable traefik to proxy this container
+      - "traefik.http.routers.jenkins.rule=Host(`jenkins.corentin-cuzeau.fr`)" # <== Your Domain Name goes here for the http rule
+      - "traefik.http.routers.jenkins.entrypoints=web" # <== Defining the entrypoint for http, **ref: line 30
+      - "traefik.http.routers.jenkins.middlewares=redirect@file" # <== This is a middleware to redirect to https
+      - "traefik.http.routers.jenkins-secured.rule=Host(`jenkins.corentin-cuzeau.fr`)" # <== Your Domain Name for the https rule 
+      - "traefik.http.routers.jenkins-secured.entrypoints=web-secured" # <== Defining entrypoint for https, **ref: line 31
+      - "traefik.http.routers.jenkins-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
+    networks:
+      - web # <== Placing traefik on the network named web, to access containers on this network
+
+networks:
+  web:
+    external: true
+
+volumes:
+  my-jenkins:
