@@ -5,6 +5,12 @@ services:
     container_name: jenkins
     restart: always
     image: jenkins/jenkins:lts
+#    expose:
+ #     - "80"
+     # - 50000
+ #   environment:
+#      - "JENKINS_OPTS=--prefix=/jenkins"
+  #    - http_port=80
     labels:
       - "traefik.enable=true" # <== Enable traefik to proxy this container
       - "traefik.http.routers.jenkins.rule=Host(`jenkins.corentin-cuzeau.fr`)" # <== Your Domain Name goes here for the http rule
@@ -15,10 +21,12 @@ services:
       - "traefik.http.routers.jenkins-secured.tls.certresolver=mytlschallenge" # <== Defining certsresolvers for https
     networks:
       - web # <== Placing traefik on the network named web, to access containers on this network
+    volumes:
+      - jenkins_home:/var/jenkins_home
+
+volumes:
+  jenkins_home:
 
 networks:
   web:
     external: true
-
-volumes:
-  my-jenkins:
